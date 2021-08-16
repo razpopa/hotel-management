@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
@@ -17,9 +16,9 @@ namespace HotelAppLibrary.Databases
 			_config = config;
 		}
 
-		public List<T> LoadData<T, U>(string sqlStatement, U parameters, string connectionString, bool isStoredProcedure = false)
+		public List<T> LoadData<T, U>(string sqlStatement, U parameters, string connectionStringName, bool isStoredProcedure = false)
 		{
-			var connString = _config.GetConnectionString(connectionString);
+			var connectionString = _config.GetConnectionString(connectionStringName);
 			var commandType = CommandType.Text;
 
 			if (isStoredProcedure)
@@ -27,7 +26,7 @@ namespace HotelAppLibrary.Databases
 				commandType = CommandType.StoredProcedure;
 			}
 
-			using (IDbConnection connection = new SqlConnection(connString))
+			using (IDbConnection connection = new SqlConnection(connectionString))
 			{
 				var rows = connection.Query<T>(sqlStatement, parameters, commandType: commandType).ToList();
 
@@ -37,7 +36,7 @@ namespace HotelAppLibrary.Databases
 
 		public void SaveData<T>(string sqlStatement, T parameters, string connectionStringName, bool isStoredProcedure = false)
 		{
-			var connString = _config.GetConnectionString(connectionStringName);
+			var connectionString = _config.GetConnectionString(connectionStringName);
 			var commandType = CommandType.Text;
 
 			if (isStoredProcedure)
@@ -45,7 +44,7 @@ namespace HotelAppLibrary.Databases
 				commandType = CommandType.StoredProcedure;
 			}
 
-			using (IDbConnection connection = new SqlConnection(connString))
+			using (IDbConnection connection = new SqlConnection(connectionString))
 			{
 				connection.Execute(sqlStatement, parameters, commandType: commandType);
 			}
